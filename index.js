@@ -33,23 +33,23 @@ async function run() {
 
     app.post('/add-product', async (req, res) => {
       console.log(req.body);
-      const response = await mmCart.insertOne(req.body);
+      const response = await mmCartCollection.insertOne(req.body);
       res.send(response);
     });
 
     app.get('/cart', async (req, res) => {
-      const response = await mmCart.find({}).toArray();
+      const response = await mmCartCollection.find({}).toArray();
       res.send(response);
     });
 
     app.get('/products/product-details/:id', async (req, res) => {
       console.log(req.params.id);
-      const response = await mmCart.findOne({ _id: new ObjectId(req.params.id) });
+      const response = await mmCartCollection.findOne({ _id: new ObjectId(req.params.id) });
       res.send(response);
     });
     app.get('/products/:name', async (req, res) => {
       console.log(req.params.name);
-      const response = await mmCart.find({ category: req.params.name }).toArray();
+      const response = await mmCartCollection.find({ category: req.params.name }).toArray();
       res.send(response);
     });
 
