@@ -48,6 +48,12 @@ async function run() {
       res.send(response);
     });
 
+    app.put('/products/product-update/:id', async (req, res) => {
+      const { image, name, brandName, type, price, shortDescription, rating } = req.body;
+      const response = await mmCartCollection.findOneAndUpdate({ _id: new ObjectId(req.params.id) }, { $set: { image, name, brandName, type, price, shortDescription, rating } });
+      res.send(response);
+    });
+
     app.get('/products/:name', async (req, res) => {
       console.log(req.params.name);
       const response = await mmCartCollection
