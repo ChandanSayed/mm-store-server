@@ -47,9 +47,14 @@ async function run() {
       const response = await mmCartCollection.findOne({ _id: new ObjectId(req.params.id) });
       res.send(response);
     });
+
     app.get('/products/:name', async (req, res) => {
       console.log(req.params.name);
-      const response = await mmCartCollection.find({ category: req.params.name }).toArray();
+      const response = await mmCartCollection
+        .find({
+          brandName: { $regex: new RegExp(req.params.name, 'i') }
+        })
+        .toArray();
       res.send(response);
     });
 
