@@ -26,37 +26,44 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    const mmCartCollection = client.db('mmCart').collection('products');
+    const mmCartProductCollection = client.db('mmCart').collection('products');
+    const mmCartCartCollection = client.db('mmCart').collection('cartItems');
     app.get('/', (req, res) => {
       res.send('Welcome to home route!');
     });
 
     app.post('/add-product', async (req, res) => {
       console.log(req.body);
-      const response = await mmCartCollection.insertOne(req.body);
+      const response = await mmCartProductCollection.insertOne(req.body);
       res.send(response);
     });
 
-    app.get('/cart', async (req, res) => {
-      const response = await mmCartCollection.find({}).toArray();
+    app.get('/cartItems/:uid', async (req, res) => {
+      console.log(req.params);
+      const response = await mmCartCartCollection.find({ uId: req.params.uid }).toArray();
+      res.send(response);
+    });
+
+    app.post('/cartItems', async (req, res) => {
+      const response = await mmCartCartCollection.insertOne(req.body);
       res.send(response);
     });
 
     app.get('/products/product-details/:id', async (req, res) => {
       console.log(req.params.id);
-      const response = await mmCartCollection.findOne({ _id: new ObjectId(req.params.id) });
+      const response = await mmCartProductCollection.findOne({ _id: new ObjectId(req.params.id) });
       res.send(response);
     });
 
     app.put('/products/product-update/:id', async (req, res) => {
       const { image, name, brandName, type, price, shortDescription, rating } = req.body;
-      const response = await mmCartCollection.findOneAndUpdate({ _id: new ObjectId(req.params.id) }, { $set: { image, name, brandName, type, price, shortDescription, rating } });
+      const response = await mmCartProductCollection.findOneAndUpdate({ _id: new ObjectId(req.params.id) }, { $set: { image, name, brandName, type, price, shortDescription, rating } });
       res.send(response);
     });
 
     app.get('/products/:name', async (req, res) => {
       console.log(req.params.name);
-      const response = await mmCartCollection
+      const response = await mmCartProductCollection
         .find({
           brandName: { $regex: new RegExp(req.params.name, 'i') }
         })
