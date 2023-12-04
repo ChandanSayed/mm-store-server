@@ -29,7 +29,7 @@ async function run() {
     const mmCartProductCollection = client.db('mmCart').collection('products');
     const mmCartCartCollection = client.db('mmCart').collection('cartItems');
     app.get('/', (req, res) => {
-      res.send('Welcome to home route!');
+      res.send('Welcome to the home route!');
     });
 
     app.post('/add-product', async (req, res) => {
@@ -39,13 +39,17 @@ async function run() {
     });
 
     app.get('/cartItems/:uid', async (req, res) => {
-      console.log(req.params);
       const response = await mmCartCartCollection.find({ uId: req.params.uid }).toArray();
       res.send(response);
     });
 
     app.post('/cartItems', async (req, res) => {
       const response = await mmCartCartCollection.insertOne(req.body);
+      res.send(response);
+    });
+
+    app.delete('/cartItems/:id', async (req, res) => {
+      const response = await mmCartCartCollection.deleteOne({ _id: new ObjectId(req.params.id) });
       res.send(response);
     });
 
